@@ -9,7 +9,7 @@
 预计地址：
 
 ```text
-https://2n4rgdmy89-rgb.github.io/dino__planet/
+https://2n4rgdmy89-rgb.github.io/dino_planet/
 ```
 
 静态版不需要 Flask 后端。保存和读取使用玩家当前浏览器的 `localStorage`，不会跨设备同步。
