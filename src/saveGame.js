@@ -11,6 +11,21 @@ function getStorage() {
   }
 }
 
+function shouldUseServerSaveApi() {
+  if (typeof globalThis.fetch !== "function") return false;
+
+  const location = globalThis.location;
+  if (!location || location.protocol === "file:") return false;
+
+  const hostname = location.hostname.toLowerCase();
+  if (hostname.endsWith(".github.io")) return false;
+
+  const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]" || hostname === "::1";
+  if (isLocalHost && location.port && location.port !== "5000") return false;
+
+  return true;
+}
+
 function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
@@ -140,6 +155,8 @@ export function clearSaveGame() {
  * 向服务端创建存档。成功时返回存档 id，失败时返回 null。
  */
 export async function saveGameToServer(state) {
+  if (!shouldUseServerSaveApi()) return null;
+
   try {
     const payload = serializeState(state);
     const res = await fetch(API_BASE, {
@@ -159,6 +176,8 @@ export async function saveGameToServer(state) {
  * 从服务端读取最近的存档。无存档或网络不通时返回 null。
  */
 export async function loadGameFromServer() {
+  if (!shouldUseServerSaveApi()) return null;
+
   try {
     const res = await fetch(`${API_BASE}/latest`);
     if (!res.ok) return null;
@@ -173,6 +192,8 @@ export async function loadGameFromServer() {
  * 查询服务端是否有存档。网络不通时返回 false。
  */
 export async function hasSaveGameOnServer() {
+  if (!shouldUseServerSaveApi()) return false;
+
   try {
     const res = await fetch(API_BASE);
     if (!res.ok) return false;
@@ -187,6 +208,8 @@ export async function hasSaveGameOnServer() {
  * 删除服务端最近一次存档。返回是否成功。
  */
 export async function clearLatestServerSave() {
+  if (!shouldUseServerSaveApi()) return false;
+
   try {
     const listRes = await fetch(API_BASE);
     if (!listRes.ok) return false;

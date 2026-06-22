@@ -4,11 +4,15 @@ import { createInitialState } from "../src/gameState.js";
 import { advanceTurn } from "../src/rules.js";
 import {
   SAVE_VERSION,
+  clearLatestServerSave,
   clearSaveGame,
   deserializeState,
   hasSaveGame,
+  hasSaveGameOnServer,
   loadGame,
+  loadGameFromServer,
   saveGame,
+  saveGameToServer,
   serializeState
 } from "../src/saveGame.js";
 
@@ -42,6 +46,25 @@ function withStorage(callback) {
       delete globalThis.localStorage;
     } else {
       globalThis.localStorage = previousStorage;
+    }
+  }
+}
+
+async function withGlobalValue(name, value, callback) {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, name);
+  Object.defineProperty(globalThis, name, {
+    configurable: true,
+    writable: true,
+    value
+  });
+
+  try {
+    return await callback();
+  } finally {
+    if (descriptor) {
+      Object.defineProperty(globalThis, name, descriptor);
+    } else {
+      delete globalThis[name];
     }
   }
 }
@@ -120,5 +143,30 @@ test("saveGame, hasSaveGame, loadGame, and clearSaveGame use localStorage", () =
 
     assert.equal(clearSaveGame(), true);
     assert.equal(hasSaveGame(), false);
+  });
+});
+
+test("server save API is skipped on GitHub Pages", async () => {
+  let fetchCalled = false;
+  const location = {
+    protocol: "https:",
+    hostname: "2n4rgdmy89-rgb.github.io",
+    port: ""
+  };
+  const fetch = async () => {
+    fetchCalled = true;
+    return { ok: true, json: async () => ({ saves: [] }) };
+  };
+
+  await withGlobalValue("location", location, async () => {
+    await withGlobalValue("fetch", fetch, async () => {
+      const state = createInitialState({ seed: 123 });
+
+      assert.equal(await saveGameToServer(state), null);
+      assert.equal(await loadGameFromServer(), null);
+      assert.equal(await hasSaveGameOnServer(), false);
+      assert.equal(await clearLatestServerSave(), false);
+      assert.equal(fetchCalled, false);
+    });
   });
 });
