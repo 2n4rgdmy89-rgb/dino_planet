@@ -1,0 +1,11 @@
+[project]
+name = "dinosaur-hex-evolution"
+version = "0.1.0"
+description = "恐龙星球 — 六边形演化策略游戏"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.0",
+]
+
+[tool.uv]
+package = false

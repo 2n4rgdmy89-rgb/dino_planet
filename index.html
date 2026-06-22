@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>恐龙星球</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%232f7d65'/%3E%3Cpath d='M14 39c8-16 25-20 39-13-7 1-11 4-12 10 5 2 8 5 9 10-8-5-18-6-30-2l-4 8-4-2 3-7c-5 0-8-1-11-4h10Z' fill='%23f0eadc'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main id="app" class="app-shell">
+      <!-- 顶部资源栏：文明VI风格薄条 -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="era-badge" id="eraLabel">三叠纪</span>
+          <strong id="maLabel">252 Ma</strong>
+          <span class="turn-badge" id="turnLabel">第 0 回合</span>
+        </div>
+        <div class="topbar-stats">
+          <div class="topbar-stat"><dt>战力</dt><dd id="totalPower">1</dd></div>
+          <div class="topbar-stat"><dt>人口</dt><dd id="population">10</dd></div>
+          <div class="topbar-stat"><dt>格均</dt><dd id="averagePopulation">10</dd></div>
+          <div class="topbar-stat"><dt>倍率</dt><dd id="populationMultiplier">1x</dd></div>
+          <div class="topbar-stat"><dt>繁殖</dt><dd id="reproduction">1</dd></div>
+          <div class="topbar-stat"><dt>变异点</dt><dd id="mutationPoints">0</dd></div>
+        </div>
+        <div class="topbar-right">
+          <button id="openMutationTreeButton" class="compact-action" type="button">异变</button>
+          <button id="openRulebookButton" class="compact-action" type="button" aria-label="规则书">?</button>
+          <button id="saveGameButton" class="compact-action" type="button">存</button>
+          <button id="loadGameButton" class="compact-action" type="button">读</button>
+        </div>
+      </header>
+
+      <!-- 胜利进度条 -->
+      <div class="victory-strip">
+        <div class="victory-item">
+          <span id="populationGoal">人口 0 / 40,000</span>
+          <progress id="populationProgress" value="0" max="40000"></progress>
+        </div>
+        <div class="victory-item">
+          <span id="powerGoal">总战力 1 / 100</span>
+          <progress id="powerProgress" value="1" max="100"></progress>
+        </div>
+      </div>
+
+      <!-- 全屏地图区域 -->
+      <section class="map-stage" aria-label="六边形地图">
+        <div class="map-controls" aria-label="地图缩放">
+          <button id="zoomInButton" type="button" aria-label="放大地图">+</button>
+          <button id="zoomOutButton" type="button" aria-label="缩小地图">−</button>
+          <button id="resetMapViewButton" type="button" aria-label="重置地图视角">⌂</button>
+        </div>
+        <svg id="hexMap" role="img" aria-label="恐龙领地地图"></svg>
+      </section>
+
+      <!-- 左上浮动：当前物种信息（精简） -->
+      <div class="float-species">
+        <strong id="speciesName">原始小型肉食恐龙</strong>
+        <span id="abilityName" class="ability-name">原始种群</span>
+        <p id="abilityDescription" class="ability-description">没有特殊能力。</p>
+      </div>
+
+      <!-- 右侧浮动：格子详情 -->
+      <aside class="float-tile-detail" aria-label="格子详情">
+        <div id="tileDetail" class="tile-detail empty">
+          <p>选择一个格子查看详情。</p>
+        </div>
+      </aside>
+
+      <!-- 右下角浮动：操作按钮 + 敌群活动 -->
+      <div class="float-actions">
+        <div id="threatWarnings" class="threat-warnings" aria-live="polite"></div>
+        <div id="visibleEnemySummary" class="visible-enemy-summary" aria-live="polite"></div>
+        <button id="skyEyeButton" class="action-btn" type="button">天眼</button>
+        <button id="endTurnButton" class="action-btn primary-action-btn" type="button">结束回合</button>
+      </div>
+
+      <!-- 底部事件日志（精简） -->
+      <section class="float-log" aria-label="事件日志">
+        <ol id="eventLog" class="event-log"></ol>
+      </section>
+    </main>
+
+    <div id="tileTooltip" class="tile-tooltip hidden" aria-hidden="true"></div>
+    <div id="mutationRoot" class="mutation-root hidden" aria-hidden="true"></div>
+    <div id="modalRoot" class="modal-root hidden" aria-hidden="true"></div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

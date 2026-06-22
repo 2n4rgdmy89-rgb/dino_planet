@@ -1,0 +1,10 @@
+node_modules/
+.playwright-cli/
+output/
+server.log
+server.err.log
+npm-debug.log*
+saves/
+.venv/
+__pycache__/
+*.pyc

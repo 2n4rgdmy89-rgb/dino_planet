@@ -1,0 +1,11 @@
+{
+  "name": "dinosaur-hex-evolution",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "backend": "uv run python backend/app.py",
+    "test": "node --test"
+  }
+}
